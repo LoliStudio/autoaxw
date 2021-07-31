@@ -28,6 +28,8 @@ sslmail="${cfemail}"
 v2bHost="${v2bapi}"
 v2bAPI="${v2btoken}"
 EOF
+  curl -o /usr/bin/autoaxw -Ls https://raw.githubusercontent.com/LoliStudio/autoaxw/main/autoaxw.sh
+  chmod +x /usr/bin/autoaxw
   fi
   show_menu
 }
@@ -733,7 +735,7 @@ warp_off() {
 
 # Update Shell
 update_shell() {
-  wget -O /usr/bin/autoaxw -N --no-check-certificate https://raw.githubusercontent.com/SeonMe/autoaxw/main/XA.sh
+  wget -O /usr/bin/autoaxw -N --no-check-certificate https://raw.githubusercontent.com/LoliStudio/autoaxw/main/autoaxw.sh
   if [[ $? != 0 ]]; then
     echo ""
     echo -e "${red}下载脚本失败，请检查本机能否连接 Github${plain}"
