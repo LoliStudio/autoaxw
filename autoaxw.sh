@@ -20,8 +20,8 @@ options() {
     cat > /etc/autoaxw/options.conf << EOF
 # ACME 证书（CF)
 # 如您不是使用 Cloudflare，请将下方变量更改为您的
-export CF_Key="${cfkey}"
-export CF_Email="${cfemail}"
+CF_Key="${cfkey}"
+CF_Email="${cfemail}"
 sslmail="${cfemail}"
 
 # v2b面板
