@@ -218,8 +218,8 @@ Nodes:
       CertConfig:
         CertMode: ${ssl_mode}
         CertDomain: ${domain}
-        CertFile: /root/.acme.sh/${domain}_ecc/fullchain.cer
-        KeyFile: /root/.acme.sh/${domain}_ecc/${domain}.key
+        CertFile: /root/.acme.sh/${cf_domain}_ecc/fullchain.cer
+        KeyFile: /root/.acme.sh/${cf_domain}_ecc/${cf_domain}.key
 EOF
 }
 
@@ -299,8 +299,8 @@ au_conf() {
     "force_close_tls": ${ssl_type},
     "log_path": "/etc/au/v2.log",
     "cert": {
-      "cert_path": "/root/.acme.sh/${domain}_ecc/fullchain.cer",
-      "key_path": "/root/.acme.sh/${domain}_ecc/${domain}.key"
+      "cert_path": "/root/.acme.sh/${cf_domain}_ecc/fullchain.cer",
+      "key_path": "/root/.acme.sh/${cf_domain}_ecc/${cf_domain}.key"
     },
     "speed_limit_level": [0]
   },
