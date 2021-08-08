@@ -14,14 +14,16 @@ options() {
     "
     read -p "输入 v2board 面板 API 链接: " v2bapi
     read -p "输入 v2board 面板密钥: " v2btoken
+    read -p "输入节点根域名: " root_domain
     read -p "输入 Cloudflare Email: " cfemail
     read -p "输入 Cloudflare APIKey: " cfkey
     [ ! -d "/etc/autoaxw" ] && mkdir -p /etc/autoaxw
     cat > /etc/autoaxw/options.conf << EOF
 # ACME 证书（CF)
 # 如您不是使用 Cloudflare，请将下方变量更改为您的
-CF_Key="${cfkey}"
-CF_Email="${cfemail}"
+cf_domain="${root_domain}"
+cf_key="${cfkey}"
+cf_mail="${cfemail}"
 sslmail="${cfemail}"
 
 # v2b面板
@@ -134,9 +136,11 @@ install_acme(){
       /root/.acme.sh/acme.sh --issue  --dns dns_cf -d ${domain} --keylength ec-256
     else
       curl https://get.acme.sh | sh
+      export CF_Key=${cf_key}
+      export CF_Email=${cf_mail}
       /root/.acme.sh/acme.sh  --set-default-ca  --server zerossl
       /root/.acme.sh/acme.sh --register-account -m ${sslmail}
-      /root/.acme.sh/acme.sh --issue  --dns dns_cf -d ${domain} --keylength ec-256
+      /root/.acme.sh/acme.sh --issue  --dns dns_cf -d ${cf_domain} -d *.${cf_domain} --keylength ec-256
     fi
   fi
 }
