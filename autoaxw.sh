@@ -129,18 +129,18 @@ EOF
 
 # Acme.sh
 install_acme(){
-  if [ -e "/root/.acme.sh/${domain}_ecc/${domain}.key" ]; then
+  if [ -e "/root/.acme.sh/${cf_domain}_ecc/${cf_domain}.key" ]; then
     echo ""
   else
     if [ -e "/root/.acme.sh/acme.sh" ]; then
-      /root/.acme.sh/acme.sh --issue  --dns dns_cf -d ${domain} --keylength ec-256
+      /root/.acme.sh/acme.sh --issue  --dns dns_cf -d ${cf_domain} -d *.${cf_domain} --keylength ec-256
     else
       curl https://get.acme.sh | sh
       export CF_Key=${cf_key}
       export CF_Email=${cf_mail}
-      /root/.acme.sh/acme.sh  --set-default-ca  --server zerossl
-      /root/.acme.sh/acme.sh --register-account -m ${sslmail}
-      /root/.acme.sh/acme.sh --issue  --dns dns_cf -d ${cf_domain} -d *.${cf_domain} --keylength ec-256
+      /root/.acme.sh/acme.sh --set-default-ca --server zerossl
+      /root/.acme.sh/acme.sh --register-account -m m@example.com
+      /root/.acme.sh/acme.sh --issue --dns dns_cf -d ${cf_domain} -d *.${cf_domain} --keylength ec-256
     fi
   fi
 }
