@@ -136,6 +136,8 @@ install_acme(){
       /root/.acme.sh/acme.sh --issue  --dns dns_cf -d ${rdomain} --keylength ec-256
     else
       curl https://get.acme.sh | sh
+      export CF_Key="${key}"
+      export CF_Email="${mail}"
       /root/.acme.sh/acme.sh --set-default-ca --server zerossl
       /root/.acme.sh/acme.sh --register-account -m ${mail}
       /root/.acme.sh/acme.sh --issue  --dns dns_cf -d ${rdomain} -d *.${rdomain} --keylength ec-256
