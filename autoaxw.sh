@@ -10,7 +10,7 @@ options() {
   ${red}变量文件保存在 /etc/autoaxw/options.conf ${plain}
 ————————————————
     "
-    read -p "输入 v2board 面板 API 链接: " v2bapi
+    read -p "输入 v2board 面板 API 链接: " v2bhosts
     read -p "输入 v2board 面板密钥: " v2btoken
     read -p "节点根域名: " nodedomain
     read -p "输入 Cloudflare Email: " cfemail
@@ -19,14 +19,14 @@ options() {
     cat > /etc/autoaxw/options.conf << EOF
 # ACME 证书（CF)
 # 如您不是使用 Cloudflare，请将下方变量更改为您的
-key="${cfkey}"
-mail="${cfemail}"
+CF_Key="${cfkey}"
+CF_Email="${cfemail}"
 
 # 节点根域名
 rdomain="${nodedomain}"
 
 # v2b面板
-v2bHost="${v2bapi}"
+v2bHost="${v2bhosts}"
 v2bAPI="${v2btoken}"
 EOF
   curl -o /usr/bin/autoaxw -Ls https://raw.githubusercontent.com/LoliStudio/autoaxw/main/autoaxw.sh
@@ -91,8 +91,14 @@ install_base() {
   sed -i '/^# End of file/,$d' /etc/security/limits.conf
   cat >> /etc/security/limits.conf <<EOF
 # End of file
-* soft nofile 512000
+* soft nproc 1024000
+* hard nproc 1024000
+* soft nofile 1024000
 * hard nofile 1024000
+root soft nproc 1024000
+root hard nproc 1024000
+root soft nofile 1024000
+root hard nofile 1024000
 EOF
   [ -e "/etc/sysctl.conf" ] && /bin/mv /etc/sysctl.conf{,_bk}
   cat >> /etc/sysctl.conf << EOF
@@ -129,20 +135,11 @@ EOF
 
 # Acme.sh
 install_acme(){
-  if [ -e "/root/.acme.sh/${rdomain}_ecc/${rdomain}.key" ]; then
-    echo ""
-  else
-    if [ -e "/root/.acme.sh/acme.sh" ]; then
-      /root/.acme.sh/acme.sh --issue  --dns dns_cf -d ${rdomain} --keylength ec-256
-    else
-      curl https://get.acme.sh | sh
-      export CF_Key="${key}"
-      export CF_Email="${mail}"
-      /root/.acme.sh/acme.sh --set-default-ca --server zerossl
-      /root/.acme.sh/acme.sh --register-account -m ${mail}
-      /root/.acme.sh/acme.sh --issue  --dns dns_cf -d ${rdomain} -d *.${rdomain} --keylength ec-256
-    fi
-  fi
+  curl https://get.acme.sh | sh
+  . /etc/autoaxw/options.conf
+  /root/.acme.sh/acme.sh --set-default-ca --server zerossl
+  /root/.acme.sh/acme.sh --register-account -m ${CF_Email}
+  /root/.acme.sh/acme.sh --issue  --dns dns_cf -d ${rdomain} -d *.${rdomain} --keylength ec-256
 }
 
 # XrayR
@@ -699,7 +696,9 @@ server {
 }
 EOF
 }
-
+install_ss() {
+  ehco "啥也没有"
+}
 # Warp
 install_warp() {
   apt-get install sudo net-tools openresolv -y
