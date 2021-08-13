@@ -136,6 +136,7 @@ EOF
 # Acme.sh
 install_acme(){
   curl https://get.acme.sh | sh
+  . /etc/autoaxw/options.conf
   export CF_Key=${cloudflare_key}
   export CF_Email=${cloudflare_email}
   /root/.acme.sh/acme.sh --set-default-ca --server zerossl
