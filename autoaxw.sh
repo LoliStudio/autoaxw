@@ -19,8 +19,8 @@ options() {
     cat > /etc/autoaxw/options.conf << EOF
 # ACME 证书（CF)
 # 如您不是使用 Cloudflare，请将下方变量更改为您的
-CF_Key="${cfkey}"
-CF_Email="${cfemail}"
+cloudflare_key="${cfkey}"
+cloudflare_email="${cfemail}"
 
 # 节点根域名
 rdomain="${nodedomain}"
@@ -136,7 +136,8 @@ EOF
 # Acme.sh
 install_acme(){
   curl https://get.acme.sh | sh
-  . /etc/autoaxw/options.conf
+  export CF_Key=${cloudflare_key}
+  export CF_Email=${cloudflare_email}
   /root/.acme.sh/acme.sh --set-default-ca --server zerossl
   /root/.acme.sh/acme.sh --register-account -m ${CF_Email}
   /root/.acme.sh/acme.sh --issue  --dns dns_cf -d ${rdomain} -d *.${rdomain} --keylength ec-256
