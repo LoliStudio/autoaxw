@@ -77,6 +77,17 @@ elif [[ x"${release}" == x"debian" ]]; then
   fi
 fi
 
+memory() {
+  Swap=`free -m | awk '/Swap:/{print $2}'`
+  if [ "${Swap}" == '0' ]; then
+    dd if=/dev/zero of=/swapfile count=1048 bs=1M
+    mkswap /swapfile
+    swapon /swapfile
+    chmod 600 /swapfile
+    [ -z "`grep swapfile /etc/fstab`" ] && echo '/swapfile    swap    swap    defaults    0 0' >> /etc/fstab
+  fi
+}
+
 # base
 install_base() {
   if [[ x"${release}" == x"debian" ]]; then
@@ -131,6 +142,7 @@ EOF
     ntpdate -u pool.ntp.org
     [ ! -e "/var/spool/cron/crontabs/root" -o -z "$(grep ntpdate /var/spool/cron/crontabs/root 2>/dev/null)" ] && { echo "*/20 * * * * $(which ntpdate) -u pool.ntp.org > /dev/null 2>&1" >> /var/spool/cron/crontabs/root;chmod 600 /var/spool/cron/crontabs/root; }
   fi
+  memory
 }
 
 # Acme.sh
@@ -319,8 +331,9 @@ xray_file_v4() {
   cat > /etc/au/config.json << EOF
 {
   "log": {
-    "log_level": "warning",
-    "access": "/etc/au/xr.log"
+    "access": "none",
+    "error": "/etc/au/xr.log",
+    "loglevel": "error"
   },
   "stats": {},
   "api": {
