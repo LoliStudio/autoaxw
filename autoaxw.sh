@@ -177,8 +177,9 @@ LimitCORE=infinity
 LimitNOFILE=999999
 WorkingDirectory=/usr/local/XrayR/
 ExecStart=/usr/local/XrayR/XrayR -config /etc/XrayR/config.yml
-Restart=on-failure
-RestartSec=10
+Restart=always
+RestartSec=5
+RestartPreventExitStatus=0
 
 [Install]
 WantedBy=multi-user.target
@@ -252,10 +253,11 @@ CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE
 NoNewPrivileges=true
 ExecStart=/usr/local/xray/xray run -config /etc/au/config.json
-Restart=on-failure
-RestartPreventExitStatus=23
-LimitNPROC=10000
-LimitNOFILE=1000000
+Restart=always
+RestartSec=5
+RestartPreventExitStatus=0
+LimitNPROC=1024000
+LimitNOFILE=1024000
 
 [Install]
 WantedBy=multi-user.target
@@ -274,8 +276,9 @@ BindsTo=xray.service
 [Service]
 Type=simple
 User=root
-Restart=on-failure
-RestartSec=5s
+Restart=always
+RestartSec=5
+RestartPreventExitStatus=0
 ExecStart=/usr/local/sbin/Air-Universe -c /etc/au/au.json
 
 [Install]
