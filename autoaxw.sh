@@ -715,7 +715,7 @@ server {
 EOF
 }
 install_ss() {
-  ehco "啥也没有"
+  ehco "啥也没有..."
 }
 # Warp
 install_warp() {
